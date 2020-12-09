@@ -9,6 +9,7 @@ import (
 
 func main() {
 	conf := bootstrap.SetupConfig()
+	bootstrap.SetupDatabase()
 
 	// 设置 Debug
 	if conf.Debug {
