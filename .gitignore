@@ -4,5 +4,6 @@
 # temp
 /tmp
 /config
+/logs
 *.log*
 *.error*
