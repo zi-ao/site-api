@@ -1,6 +1,8 @@
 # idea
 .idea/
 
-
+# temp
+/tmp
+/config
 *.log*
 *.error*
