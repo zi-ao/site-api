@@ -1,7 +1,6 @@
 package logger
 
 import (
-	"fmt"
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"github.com/rifflock/lfshook"
 	"github.com/sirupsen/logrus"
@@ -73,12 +72,37 @@ func getInfo() *logrus.Fields {
 	filename, line := f.FileLine(pc[0])
 	return &logrus.Fields{
 		"file": strings.Replace(filename, repoPath, "", 1),
-		"line": line,
+		"line": line - 1,
 		"func": f.Name(),
 	}
 }
 
+// Info 信息
 func Info(args ...interface{}) {
-	fmt.Println(getInfo())
 	log.WithFields(*getInfo()).Info(args...)
+}
+
+// Fatal
+func Fatal(args ...interface{}) {
+	log.WithFields(*getInfo()).Fatal(args...)
+}
+
+// Debug
+func Debug(args ...interface{}) {
+	log.WithFields(*getInfo()).Debug(args...)
+}
+
+// Warn
+func Warn(args ...interface{}) {
+	log.WithFields(*getInfo()).Warn(args...)
+}
+
+// Error
+func Error(args ...interface{}) {
+	log.WithFields(*getInfo()).Error(args...)
+}
+
+// Panic
+func Panic(args ...interface{}) {
+	log.WithFields(*getInfo()).Panic(args...)
 }

@@ -2,8 +2,10 @@ package bootstrap
 
 import (
 	"fmt"
+	"github.com/zi-ao/site-api/app/models/users"
 	"github.com/zi-ao/site-api/pkg/config"
 	"github.com/zi-ao/site-api/pkg/model"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -20,5 +22,14 @@ func SetupDatabase() {
 		sqlDB.SetMaxIdleConns(10)
 		// 设置每个链接的过期时间
 		sqlDB.SetConnMaxLifetime(5 * time.Minute)
+	}
+
+	migrate(db)
+}
+
+func migrate(db *gorm.DB) {
+	err := db.AutoMigrate(&users.User{})
+	if err != nil {
+		fmt.Println(err.Error())
 	}
 }

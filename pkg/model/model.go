@@ -3,11 +3,21 @@ package model
 import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"time"
 )
 
 // DB 数据库连接池
 var DB *gorm.DB
 
+// Basic 基础模型
+type Basic struct {
+	ID        uint           `gorm:"primarykey" json:"id"`
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at"`
+}
+
+// ConnectDB 连接数据库
 func ConnectDB(DSN string) *gorm.DB {
 	var err error
 	DB, err = gorm.Open(mysql.New(mysql.Config{

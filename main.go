@@ -3,15 +3,15 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/zi-ao/site-api/bootstrap"
-	"github.com/zi-ao/site-api/pkg/logger"
 	"github.com/zi-ao/site-api/pkg/middlewares"
-	"net/http"
+	"github.com/zi-ao/site-api/routes"
 	"strconv"
 )
 
 func main() {
 	conf := bootstrap.SetupConfig()
 	bootstrap.SetupDatabase()
+	bootstrap.SetupValidator()
 
 	// 设置 Debug
 	if conf.Debug {
@@ -23,13 +23,7 @@ func main() {
 	// 启动 Gin
 	engine := gin.New()
 	engine.Use(middlewares.Logger(), gin.Recovery())
-	engine.GET("/", func(context *gin.Context) {
-		logger.Info(2222)
-		context.JSON(http.StatusOK, gin.H{
-			"message": "success",
-		})
-	})
-	logger.Info(1111)
+	routes.SetupRoutes(engine)
 	err := engine.Run(":" + strconv.Itoa(int(conf.Port)))
 	if err != nil {
 		panic(err)
