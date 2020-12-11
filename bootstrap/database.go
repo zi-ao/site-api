@@ -6,11 +6,21 @@ import (
 	"github.com/zi-ao/site-api/pkg/config"
 	"github.com/zi-ao/site-api/pkg/model"
 	"gorm.io/gorm"
+	gormLogger "gorm.io/gorm/logger"
 	"time"
 )
 
 func SetupDatabase() {
-	db := model.ConnectDB(config.Global.MySQL.DSN())
+	var mode gormLogger.LogLevel
+	if config.Global.Debug {
+		mode = gormLogger.Info
+	} else {
+		mode = gormLogger.Error
+	}
+	gConf := &gorm.Config{
+		Logger: gormLogger.Default.LogMode(mode),
+	}
+	db := model.ConnectDB(config.Global.MySQL.DSN(), gConf)
 
 	sqlDB, err := db.DB()
 	if err != nil {
