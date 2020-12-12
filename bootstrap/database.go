@@ -2,7 +2,7 @@ package bootstrap
 
 import (
 	"fmt"
-	"github.com/zi-ao/site-api/app/models/users"
+	"github.com/zi-ao/site-api/app/models"
 	"github.com/zi-ao/site-api/pkg/config"
 	"github.com/zi-ao/site-api/pkg/model"
 	"gorm.io/gorm"
@@ -38,7 +38,7 @@ func SetupDatabase() {
 }
 
 func migrate(db *gorm.DB) {
-	err := db.AutoMigrate(&users.User{})
+	err := db.AutoMigrate(&models.User{}, &models.Article{})
 	if err != nil {
 		fmt.Println(err.Error())
 	}

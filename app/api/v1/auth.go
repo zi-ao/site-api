@@ -2,8 +2,10 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/zi-ao/site-api/app/models/users"
+	"github.com/zi-ao/site-api/app/models"
 	"github.com/zi-ao/site-api/app/validation"
+	"github.com/zi-ao/site-api/pkg/auth"
+	"github.com/zi-ao/site-api/pkg/model"
 	"github.com/zi-ao/site-api/pkg/response"
 	"net/http"
 	"time"
@@ -20,14 +22,14 @@ func LoginEndpoint(context *gin.Context) {
 	}
 
 	// 用户登录
-	user := users.Login(&form)
+	user := auth.Login(&form)
 	if user == nil {
 		response.FAIL(context, http.StatusBadRequest, "用户名或密码错误")
 		return
 	}
 
 	// jwt
-	token, err := users.GenerateToken(user, tokenActivateDuration)
+	token, err := auth.GenerateToken(user, tokenActivateDuration)
 	if err != nil {
 		response.FAIL(context, http.StatusInternalServerError, "服务器错误")
 		return
@@ -46,7 +48,7 @@ func RegisterEndpoint(context *gin.Context) {
 		response.FAIL(context, http.StatusBadRequest, err.Error())
 		return
 	}
-	_, err := users.Register(&form)
+	_, err := auth.Register(&form)
 	if err != nil {
 		response.FAIL(context, http.StatusInternalServerError, err.Error())
 		return
@@ -61,13 +63,12 @@ func UpdatePasswordEndpoint(context *gin.Context) {
 		response.FAIL(context, http.StatusBadRequest, err.Error())
 		return
 	}
-	var user *users.User
-	id := users.AuthID(context)
+	id := auth.ID(context)
 	if id != 0 {
-		user = users.Find(id)
+		user := &models.User{}
 
-		if user != nil && users.CheckPassword(user.Password, form.OldPassword) {
-			if users.UpdatePassword(user, form.NewPassword) == nil {
+		if model.First(user, id) != nil && auth.CheckPassword(user.Password, form.OldPassword) {
+			if models.UpdatePassword(user, form.NewPassword) == nil {
 				response.SUCCESS(context, nil)
 				return
 			}

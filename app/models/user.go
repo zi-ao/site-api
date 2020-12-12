@@ -1,7 +1,9 @@
-package users
+package models
 
 import (
+	"errors"
 	"github.com/zi-ao/site-api/pkg/model"
+	"golang.org/x/crypto/bcrypt"
 	"time"
 )
 
@@ -20,4 +22,15 @@ type User struct {
 	ActivatedAt    *time.Time `gorm:"comment:激活时间" json:"activated_at"`
 	LastActivateAt *time.Time `gorm:"comment:最后活动时间" json:"last_activate_at"`
 	RememberToken  string     `gorm:"type:char(13);comment:登录随机令牌" json:"remember_token"`
+
+	Articles []Article `gorm:"foreignKey:OwnerID"`
+}
+
+// UpdatePassword 更改密码
+func UpdatePassword(user *User, newPassword string) error {
+	password, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
+	if err == nil && model.Update(user, "password", string(password)) == nil {
+		return nil
+	}
+	return errors.New("密码修改失败")
 }

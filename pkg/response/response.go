@@ -21,11 +21,19 @@ func SUCCESS(context *gin.Context, data interface{}) {
 	Basic(context, http.StatusOK, "success", data)
 }
 
-// Abort 中止运行并返回 JSON 数据
-func Abort(context *gin.Context, code int, data, message interface{}) {
-	if data == nil {
-		data = make(map[string]string)
+// FAIL 返回失败响应
+func FAIL(context *gin.Context, code int, message interface{}) {
+	if message == nil {
+		var ok bool
+		if message, ok = respMessages[code]; !ok {
+			message = "error"
+		}
 	}
+	Basic(context, code, message, nil)
+}
+
+// Abort 中止运行并返回 JSON 数据
+func Abort(context *gin.Context, code int, message interface{}) {
 	if message == nil {
 		var ok bool
 		if message, ok = respMessages[code]; !ok {
@@ -33,12 +41,7 @@ func Abort(context *gin.Context, code int, data, message interface{}) {
 		}
 	}
 	context.AbortWithStatusJSON(code, gin.H{
-		"data":    data,
+		"data":    make(map[string]string),
 		"message": message,
 	})
-}
-
-// FAIL 返回失败响应
-func FAIL(context *gin.Context, code int, message interface{}) {
-	Abort(context, code, nil, message)
 }

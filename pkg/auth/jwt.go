@@ -1,22 +1,23 @@
-package users
+package auth
 
 import (
 	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/zi-ao/site-api/app/models"
 	"github.com/zi-ao/site-api/pkg/config"
 	"github.com/zi-ao/site-api/pkg/logger"
 	"strconv"
 	"time"
 )
 
-type standardClaims struct {
+type StandardClaims struct {
 	jwt.StandardClaims
-	*User
+	*models.User
 }
 
 // GenerateToken 生成 Token
-func GenerateToken(user *User, duration time.Duration) (string, error) {
+func GenerateToken(user *models.User, duration time.Duration) (string, error) {
 	expireTime := time.Now().Add(duration)
 	stdClaims := jwt.StandardClaims{
 		Audience:  "WEB", // 使用端 WEB，WAP，APP，MINI_PROGRAM
@@ -28,7 +29,7 @@ func GenerateToken(user *User, duration time.Duration) (string, error) {
 	}
 
 	//user.Password = ""
-	uClaims := standardClaims{
+	uClaims := StandardClaims{
 		StandardClaims: stdClaims,
 		User:           user,
 	}
@@ -43,11 +44,11 @@ func GenerateToken(user *User, duration time.Duration) (string, error) {
 }
 
 // ParseToken 解析 Token
-func ParseToken(tokenString string) (*User, error) {
+func ParseToken(tokenString string) (*models.User, error) {
 	if tokenString == "" {
 		return nil, errors.New("no token is found in Authorization Bearer")
 	}
-	claims := standardClaims{}
+	claims := StandardClaims{}
 	_, err := jwt.ParseWithClaims(tokenString, &claims, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])

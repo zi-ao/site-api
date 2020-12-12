@@ -1,15 +1,16 @@
-package users
+package auth
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/zi-ao/site-api/app/models"
 )
 
 // Auth 获取认证用户
-func Auth(context *gin.Context) *User {
+func User(context *gin.Context) *models.User {
 	value, exist := context.Get("user")
 
 	if exist {
-		user, ok := value.(*User)
+		user, ok := value.(*models.User)
 
 		if ok {
 			return user
@@ -19,8 +20,8 @@ func Auth(context *gin.Context) *User {
 }
 
 // AuthID 获取认证用户 ID
-func AuthID(context *gin.Context) uint {
-	user := Auth(context)
+func ID(context *gin.Context) uint {
+	user := User(context)
 	if user == nil {
 		return 0
 	}

@@ -15,6 +15,12 @@ func SetupRoutes(engine *gin.Engine) {
 
 		route.Use(middlewares.Auth())
 		route.POST("update-password", v1.UpdatePasswordEndpoint)
+
+		route.GET("/articles", v1.ArticleIndexEndpoint)
+		route.GET("/articles/:id", v1.ArticleShowEndpoint)
+		route.POST("/articles", v1.ArticleStoreEndpoint)
+		route.PUT("/articles/:id/update", v1.ArticleUpdateEndpoint)
+		route.DELETE("articles/:id/delete", v1.ArticleDeleteEndpoint)
 	}
 
 	// 设置 404 路由
