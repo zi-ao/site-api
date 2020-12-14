@@ -16,6 +16,14 @@ func SetupRoutes(engine *gin.Engine) {
 		route.Use(middlewares.Auth())
 		route.POST("update-password", v1.UpdatePasswordEndpoint)
 
+		// 分类操作
+		route.GET("/categories", v1.CategoryIndexEndpoint)
+		route.GET("/categories/:id", v1.CategoryShowEndpoint)
+		route.POST("/categories", v1.CategoryStoreEndpoint)
+		route.PUT("/categories/:id/update", v1.CategoryUpdateEndpoint)
+		route.DELETE("categories/:id/delete", v1.CategoryDeleteEndpoint)
+
+		// 文章操作
 		route.GET("/articles", v1.ArticleIndexEndpoint)
 		route.GET("/articles/:id", v1.ArticleShowEndpoint)
 		route.POST("/articles", v1.ArticleStoreEndpoint)

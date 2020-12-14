@@ -84,9 +84,10 @@ func ArticleDeleteEndpoint(context *gin.Context) {
 
 func createArticle(form *validation.ArticleStore) *models.Article {
 	return &models.Article{
-		Title:    form.Title,
-		Abstract: form.Content[:utils.Min(200, len(form.Content))],
-		Content:  form.Content,
+		Title:      form.Title,
+		CategoryID: form.CategoryID,
+		Abstract:   form.Content[:utils.Min(200, len(form.Content))],
+		Content:    form.Content,
 	}
 }
 
