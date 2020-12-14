@@ -18,7 +18,7 @@ func ArticleIndexEndpoint(context *gin.Context) {
 	page, _ := strconv.Atoi(context.DefaultQuery("page", "1"))
 	limit, _ := strconv.Atoi(context.DefaultQuery("limit", "10"))
 	pager := response.NewPaginate(func(db *gorm.DB) *gorm.DB {
-		return db.Omit("content").Order("created_at desc,view desc")
+		return db.Preload("Category").Preload("Tags").Omit("content").Order("created_at desc,view desc")
 	})
 	pager.Set(page, limit)
 	pager.Paginate(context, &[]models.Article{})
@@ -28,7 +28,7 @@ func ArticleIndexEndpoint(context *gin.Context) {
 func ArticleShowEndpoint(context *gin.Context) {
 	id, err := strconv.Atoi(context.Param("id"))
 	article := &models.Article{}
-	if err != nil || model.First(article, id) != nil {
+	if err != nil || model.First(article, id, "Category", "Tags") != nil {
 		response.FAIL(context, http.StatusNotFound, nil)
 		return
 	}
@@ -83,11 +83,18 @@ func ArticleDeleteEndpoint(context *gin.Context) {
 }
 
 func createArticle(form *validation.ArticleStore) *models.Article {
+	tags := make([]*models.Tag, len(form.TagIDs))
+	for index, id := range form.TagIDs {
+		tag := &models.Tag{}
+		tag.ID = id
+		tags[index] = tag
+	}
 	return &models.Article{
 		Title:      form.Title,
 		CategoryID: form.CategoryID,
 		Abstract:   form.Content[:utils.Min(200, len(form.Content))],
 		Content:    form.Content,
+		Tags:       tags,
 	}
 }
 

@@ -38,7 +38,12 @@ func SetupDatabase() {
 }
 
 func migrate(db *gorm.DB) {
-	err := db.AutoMigrate(&models.User{}, &models.Article{}, &models.Category{})
+	err := db.AutoMigrate(
+		&models.User{},
+		&models.Article{},
+		&models.Category{},
+		&models.Tag{},
+	)
 	if err != nil {
 		fmt.Println(err.Error())
 	}

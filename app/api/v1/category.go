@@ -55,7 +55,7 @@ func CategoryStoreEndpoint(context *gin.Context) {
 
 // CategoryUpdateEndpoint 修改分类
 func CategoryUpdateEndpoint(context *gin.Context) {
-	var form validation.CategoryStore
+	var form validation.CategoryUpdate
 	if err := context.ShouldBind(&form); err != nil {
 		fmt.Println(err.Error())
 		response.FAIL(context, http.StatusBadRequest, err.Error())
@@ -71,7 +71,7 @@ func CategoryUpdateEndpoint(context *gin.Context) {
 		"description": form.Description,
 	}
 	if model.Updates(category, &values) != nil {
-		response.FAIL(context, http.StatusInternalServerError, nil)
+		response.FAIL(context, http.StatusInternalServerError, "分类修改失败")
 		return
 	}
 	response.SUCCESS(context, nil)

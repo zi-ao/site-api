@@ -23,6 +23,13 @@ func SetupRoutes(engine *gin.Engine) {
 		route.PUT("/categories/:id/update", v1.CategoryUpdateEndpoint)
 		route.DELETE("categories/:id/delete", v1.CategoryDeleteEndpoint)
 
+		// 标签操作
+		route.GET("/tags", v1.TagIndexEndpoint)
+		route.GET("/tags/:id", v1.TagShowEndpoint)
+		route.POST("/tags", v1.TagStoreEndpoint)
+		route.PUT("/tags/:id/update", v1.TagUpdateEndpoint)
+		route.DELETE("tags/:id/delete", v1.TagDeleteEndpoint)
+
 		// 文章操作
 		route.GET("/articles", v1.ArticleIndexEndpoint)
 		route.GET("/articles/:id", v1.ArticleShowEndpoint)

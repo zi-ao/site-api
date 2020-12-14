@@ -18,8 +18,12 @@ func Insert(model interface{}) error {
 }
 
 // First 根据 ID 查找一条数据
-func First(model interface{}, id interface{}) error {
-	result := DB.First(model, id)
+func First(model interface{}, id interface{}, preload ...string) error {
+	db := DB
+	for _, query := range preload {
+		db = db.Preload(query)
+	}
+	result := db.First(model, id)
 	return Result(result)
 }
 

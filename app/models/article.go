@@ -14,5 +14,6 @@ type Article struct {
 	View       uint   `gorm:"default:0;comment:被浏览次数" json:"view"`
 
 	Owner    *User     `gorm:"foreignKey:ID;references:OwnerID" json:"owner,omitempty"`
-	Category *Category `json:"owner,omitempty"`
+	Category *Category `gorm:"foreignKey:CategoryID" json:"category,omitempty"`
+	Tags     []*Tag    `gorm:"many2many:article_tags;" json:"tags,omitempty"`
 }
